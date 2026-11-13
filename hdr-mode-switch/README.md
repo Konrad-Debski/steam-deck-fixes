@@ -1,16 +1,18 @@
-# Przełączanie trybu przy HDR (tryb gry)
+# Mode switch for HDR (Game Mode)
 
-Gdy włączysz HDR w Steamie, a bieżący tryb ekranu nie ma działającego HDR, usługa ustawia tryb z listy sprawdzonych trybów: najwyższą rozdzielczość, a potem najwyższe odświeżanie, ale nigdy wyższe od obecnych. Rozdzielczości ani odświeżania nie podnosi. Gdy na liście nie ma takiego trybu, nic nie zmienia. Po wyłączeniu HDR wraca do trybu sprzed włączenia. Jeśli w czasie HDR wybierzesz inny tryb ręcznie, usługa go nie zmienia.
+When you turn HDR on in Steam and the current display mode has no working HDR, the service sets a mode from a list of tested modes. It picks the highest resolution, then the highest refresh rate, but never higher than the current ones. If the list has no such mode, nothing changes. When HDR goes off, the mode from before HDR comes back. If you pick another mode by hand while HDR is on, the service leaves it alone.
 
-Oprogramowanie nie potrafi odczytać, czy HDR naprawdę działa: jądro i gamescope raportują HDR także wtedy, gdy LG G3 za dockiem CM800 pokazuje sprany obraz. Dlatego działające tryby są w ręcznie sprawdzonej liście `hdr-mode-switch.conf`. Nowy telewizor albo dock: sprawdź tryb na ekranie i dopisz linię.
+Software cannot tell whether HDR really works. The kernel and gamescope report HDR on even when the LG G3 behind the CM800 dock shows a washed-out picture. So the working modes come from a hand-tested list, `hdr-mode-switch.conf`. For a new TV or dock, check each mode on the screen and add a line.
 
-Jak to działa: usługa śledzi atom `GAMESCOPE_DISPLAY_HDR_ENABLED`, zapisuje tryb w `~/.config/gamescope/modes.cfg` i ustawia atom `GAMESCOPE_DISPLAY_MODE_NUDGE`. Steam robi to samo, gdy zmieniasz tryb w ustawieniach. Poprzedni tryb jest w `~/.local/state/hdr-mode-switch/previous`.
+How it works: the service watches the root window atom `GAMESCOPE_DISPLAY_HDR_ENABLED`, writes the mode to `~/.config/gamescope/modes.cfg` and sets the atom `GAMESCOPE_DISPLAY_MODE_NUDGE`. Steam does the same when you change the mode in its settings. The previous mode is stored in `~/.local/state/hdr-mode-switch/previous`.
 
-Wszystko jest w `/home`, więc aktualizacja SteamOS tego nie usuwa. Valve może jednak zmienić ten mechanizm w gamescope.
+Everything is in `/home`, so a SteamOS update does not remove it. Valve may still change this gamescope mechanism.
+
+Known Steam quirk, not caused by this service: after any switch from 120 Hz to 60 Hz, Steam's frame limit slider shows its minimum (12) if the saved limit was above 60. The real limit does not change.
 
 ```
-systemctl --user status hdr-mode-switch      # stan
-journalctl --user -u hdr-mode-switch -o cat  # przełączenia
-systemctl --user disable --now hdr-mode-switch && rm ~/.config/systemd/user/hdr-mode-switch.service  # usunięcie
-cd ~/.local/share/hdr-mode-switch && python3 -B -m unittest discover -s tests -v  # testy
+systemctl --user status hdr-mode-switch      # state
+journalctl --user -u hdr-mode-switch -o cat  # switches
+systemctl --user disable --now hdr-mode-switch && rm ~/.config/systemd/user/hdr-mode-switch.service  # remove
+cd ~/.local/share/hdr-mode-switch && python3 -B -m unittest discover -s tests -v  # tests
 ```

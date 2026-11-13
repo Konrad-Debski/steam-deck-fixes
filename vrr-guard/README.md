@@ -1,18 +1,18 @@
-# Strażnik VRR (tryb gry)
+# VRR guard (Game Mode)
 
-Dock Ugreen CM800 gubi sygnał HDMI, gdy VRR jest włączony w trybie wysyłanym bez kompresji DSC (1080p 120 Hz, 4K 30 Hz i niższe). Dzieje się tak z poprawką `cm800-vrr-fix` i bez niej (sprawdzone na TV 2026-11-13).
+The Ugreen CM800 dock drops the HDMI signal when VRR is on in a mode sent without DSC compression (1080p 120 Hz, 4K 30 Hz and below). This happens with and without `cm800-vrr-fix` (checked on the TV 2026-11-13).
 
-Usługa śledzi tryb ekranu i ustawienie VRR w Steamie. W trybie spoza listy `vrr-guard.conf` wyłącza VRR w gamescope (`gamescopectl adaptive_sync 0`). W trybie z listy oddaje sterowanie ustawieniu ze Steama. Przełącznik VRR w Steamie zostaje włączony, choć VRR wtedy nie działa. To zamierzone, bo po powrocie do 4K VRR wraca sam.
+The service watches the display mode and Steam's VRR setting. In a mode that is not listed in `vrr-guard.conf`, it turns VRR off in gamescope (`gamescopectl adaptive_sync 0`). In a listed mode, it hands control back to Steam's setting. The VRR toggle in Steam stays on even though VRR is not running. This is on purpose: VRR comes back by itself when you return to 4K.
 
-Telewizor LG może dalej pokazywać „FreeSync Premium”, bo dock nadal zgłasza obsługę FreeSync. Czy VRR naprawdę działa, widać po zmiennym odświeżaniu w grze.
+The LG TV may still show "FreeSync Premium", because the dock still reports FreeSync support. Whether VRR really runs shows in a game as a changing refresh rate.
 
-Na liście są tryby, w których jądro używa DSC (`dsc_bits_per_pixel` w debugfs różne od 0, pomiar 2026-11-13). VRR sprawdzony na TV: 4K 120 Hz i 4K 60 Hz.
+The list holds the modes where the kernel uses DSC (debugfs `dsc_bits_per_pixel` not 0, measured 2026-11-13). VRR checked on the TV: 4K 120 Hz and 4K 60 Hz.
 
 ```
 systemctl --user status vrr-guard
 journalctl --user -u vrr-guard -o cat
 cd ~/.local/share/vrr-guard && python3 -B -m unittest discover -s tests -v
-systemctl --user disable --now vrr-guard && rm ~/.config/systemd/user/vrr-guard.service  # usunięcie
+systemctl --user disable --now vrr-guard && rm ~/.config/systemd/user/vrr-guard.service  # remove
 ```
 
-Wszystko jest w `/home`, więc aktualizacja SteamOS tego nie usuwa.
+Everything is in `/home`, so a SteamOS update does not remove it.
