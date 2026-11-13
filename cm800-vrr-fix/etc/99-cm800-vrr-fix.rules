@@ -1,0 +1,2 @@
+# Re-check the CM800 EDID override on every DRM hotplug (TV on/off, cable, dock).
+ACTION=="change", SUBSYSTEM=="drm", KERNEL=="card[0-9]*", ENV{HOTPLUG}=="1", RUN+="/usr/bin/systemctl --no-block start cm800-vrr-fix.service"

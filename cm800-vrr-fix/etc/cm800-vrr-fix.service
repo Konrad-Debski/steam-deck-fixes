@@ -1,0 +1,13 @@
+[Unit]
+Description=FreeSync EDID override for the Ugreen CM800 dock (its converter ignores HDMI VRR)
+Documentation=file:///home/deck/.local/share/cm800-vrr-fix/README.md
+Wants=sys-kernel-debug.mount
+After=sys-kernel-debug.mount
+ConditionPathExists=/etc/cm800-vrr-fix/cm800_vrr_fix.py
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -I /etc/cm800-vrr-fix/cm800_vrr_fix.py
+
+[Install]
+WantedBy=multi-user.target

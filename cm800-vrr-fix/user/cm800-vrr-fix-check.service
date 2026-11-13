@@ -1,0 +1,9 @@
+[Unit]
+Description=Check that the CM800 VRR fix survived the last SteamOS update
+
+[Service]
+Type=oneshot
+ExecStart=/home/deck/.local/share/cm800-vrr-fix/check.sh
+
+[Install]
+WantedBy=default.target
